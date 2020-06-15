@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script th:src="@{/js/jquery.js}"></script>
+</head>
+<script ty="text/javascript">
+    $(function () {
+        $("#sname").keyup(function () {
+            var names = $("#sname").val();
+            var student = {
+                "name":names,
+                "age":0
+            }
+            var requestbody = JSON.stringify(student);
+            $.ajax({
+                "url":"/selectById",
+                "type":"post",
+                "data":requestbody,
+                "contentType":"application/json;charset=UTF-8",
+                "dataType":"json",
+                "success":function (response) {
+                    if(response==null){
+                        $("#spwd").val("？？？");
+                    }
+                    $("#spwd").val(response['age']);
+
+                },
+                "error":function (response) {
+                    $("#spwd").val("？？？");
+                }
+            });
+
+
+        })
+    })
+</script>
+<body>
+<table border="2">
+    <tr>
+        <td align="center"> 姓名</td>
+        <td align="center">年龄</td>
+        <td></td>
+    </tr>
+    <tr th:each="list : ${Studentlist}">
+        <td th:text="${list.name}" width="70" align="center"></td>
+        <td th:text="${list.age}" width="70" align="center"></td>
+        <td><a th:href="@{/exam/updateimp/{name}(name=${list.name})}">修改</a></td>
+
+        <td><a th:href="@{/exam/delete/{student}(student=${list.name})}">删除</a></td>
+    </tr>
+
+</table>
+<br>
+<a th:href="@{{num}(num=${now}-1)}">上一页  </a>&nbsp;&nbsp;
+<a th:href="@{{num}(num=${now}+1)}">下一页  </a>
+<br>
+<!--<a>首页 </a>-->
+    <a th:each="num,numStat : ${pagelist}"
+       th:href="@{{num}(num=${numStat.count})}"
+       th:text="${numStat.count}+'&nbsp;&nbsp;'">
+    </a>
+<!--<a">尾页</a>-->
+
+<h1>查询</h1>
+<table border="2">
+
+    <tr >
+        <td>姓名</td><td width="70" align="center"><input type="text" id="sname"></td>
+        <td>年龄</td><td width="70" align="center"><input type="text" id="spwd"></td>
+    </tr>
+
+</table>
+</body>
+
+
+</html>
